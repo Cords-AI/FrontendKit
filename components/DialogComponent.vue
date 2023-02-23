@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed } from 'vue';
+import { defineProps, computed, watch } from 'vue';
 
 const props = defineProps({
   modelValue: Boolean,
@@ -39,6 +39,21 @@ const value = computed({
     emit('update:modelValue', value);
   }
 })
+
+watch(value, () => {
+  if (value.value) {
+    window.addEventListener('keydown', closeDialog);
+  } else {
+    window.removeEventListener('keydown', closeDialog);
+  }
+})
+
+function closeDialog(event) {
+  if (event.key === 'Escape') {
+    emit('update:modelValue', false);
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
