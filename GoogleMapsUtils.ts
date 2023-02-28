@@ -19,4 +19,10 @@ export default class GoogleMapsUtils {
 
     return name;
   }
+
+  public static async reverseGeocodeCountry(lat, lng) {
+    const geocoder = new google.maps.Geocoder();
+    const response = await geocoder.geocode({ location: new google.maps.LatLng(lat, lng) });
+    return response.results[response.results.length - 1].formatted_address === 'Canada';
+  }
 }
