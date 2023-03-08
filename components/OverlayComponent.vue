@@ -40,7 +40,7 @@ html.overlay-component-active {
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgb(0 0 0 / 0.7);
+  background: rgba(255, 255, 255, 0.8);
   pointer-events: none;
   &[data-state="true"] {
     pointer-events: auto;

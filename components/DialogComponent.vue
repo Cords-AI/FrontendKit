@@ -6,8 +6,13 @@
         <div class="dialog-card-content">
 
           <div class="dialog-card-column">
-            <div class="dialog-card-header typography">
-              <h3>{{ props.title }}</h3>
+            <div class="dialog-card-header">
+              <div class="title typography">
+                <h3>{{ props.title }}</h3>
+              </div>
+              <div class="actions">
+                <slot name="actions"></slot>
+              </div>
             </div>
             <div class="dialog-card-slot">
               <slot></slot>
@@ -68,10 +73,11 @@ function closeDialog(event) {
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  --v-top-padding: 30px;
+  --v-bottom-padding: 20px;
+  --h-padding: 25px;
+  --gap: 20px;
   .dialog-card {
-    --v-top-padding: 30px;
-    --v-bottom-padding: 20px;
-    --h-padding: 25px;
     --min-width: min(450px, calc(100vw - var(--wrapper-padding-left) - var(--wrapper-padding-right)));
     --max-width: min(800px, calc(80vw - var(--wrapper-padding-left) - var(--wrapper-padding-right)));
     --max-height: calc(100vh - var(--safe-inset-top) - var(--safe-inset-bottom) - 50px);
@@ -79,12 +85,19 @@ function closeDialog(event) {
     min-width: var(--min-width);
     max-width: var(--max-width);
     background: white;
-    border-radius: 25px;
-    box-shadow: 0 20px 50px rgb(0 0 0 / 0.75);
+    border-radius: 8px;
+    box-shadow: 0 50px 100px -20px rgb(21 31 38 / 25%), 0 30px 60px -30px rgb(21 31 38 / 35%);
     overflow: hidden;
     pointer-events: none;
     &[data-state="true"] {
       pointer-events: auto;
+    }
+    .dialog-card-header {
+      display: flex;
+      align-items: center;
+      .title {
+        flex-grow: 1;
+      }
     }
     .dialog-card-content {
       padding: var(--v-top-padding) var(--h-padding) var(--v-bottom-padding) var(--h-padding);
@@ -104,7 +117,7 @@ function closeDialog(event) {
   .dialog-card-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--gap);
   }
 
   &.v-enter-active {
@@ -119,5 +132,4 @@ function closeDialog(event) {
     transform: scale(0.95);
   }
 }
-
 </style>

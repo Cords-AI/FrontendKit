@@ -4,20 +4,20 @@ export default class GoogleMapsUtils {
     const response = await geocoder.geocode({ location: new google.maps.LatLng(lat, lng) });
     const result = response.results?.[0];
 
+    return result ? GoogleMapsUtils.getLocationName(result) : '';
+  }
+
+  public static getLocationName(result) {
     const localities = result.address_components.filter((a) => {
       return a.types.includes('locality');
     });
 
-    let name = '';
-
     if (localities.length) {
       const locality = localities[0];
-      name = locality.long_name;
-    } else {
-      name = result.address_components[0].long_name;
+      return locality.long_name;
     }
 
-    return name;
+    return result.address_components[0].long_name;
   }
 
   public static async reverseGeocodeCountry(lat, lng) {
