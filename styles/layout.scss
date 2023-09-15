@@ -1,0 +1,74 @@
+@mixin layout {
+  --_layout-gap-v: var(--layout-gap-v, 0px);
+  --_layout-gap-h: var(--layout-gap-h, 0px);
+  --_layout-gap: var(--_layout-gap-v) var(--_layout-gap-h);
+  --_gap: var(--gap, var(--_layout-gap));
+  --_wrap: var(--wrap, nowrap);
+  --_items-inline: 1;
+  --_items-block: 1;
+  display: flex;
+  flex-wrap: var(--_wrap);
+  gap: var(--_gap);
+}
+
+@mixin layout-inline {
+  @include layout;
+  flex-direction: row;
+}
+
+@mixin layout-block {
+  @include layout;
+  flex-direction: column;
+}
+
+@mixin layout-inline-item {
+  --_item-size-inline: calc((100% - (var(--_items-inline) - 1) * var(--gap-h)) / var(--_items-inline));
+  --_item-size: var(--item-size, var(--_item-size-inline));
+  width: var(--_item-size);
+  min-width: var(--_item-size);
+  flex: 0 0 var(--_item-size);
+}
+
+@mixin layout-block-item {
+  --_item-size-block: calc((100% - (var(--_items-block) - 1) * var(--gap-h)) / var(--_items-block));
+  --_item-size: var(--item-size, var(--_item-size-block));
+  height: var(--_item-size);
+  min-height: var(--_item-size);
+  flex: 0 0 var(--_item-size);
+}
+
+@mixin layout-stack {
+  --_gap: var(--gap, 1em);
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    --_item-gap: var(--item-gap, var(--_gap));
+    margin-top: var(--_item-gap);
+  }
+}
+
+@mixin implement-layout {
+  .layout {
+    @include layout;
+  }
+
+  .layout-inline {
+    @include layout-inline;
+  }
+
+  .layout-block {
+    @include layout-block;
+  }
+
+  .layout-inline-item {
+    @include layout-inline-item;
+  }
+
+  .layout-block-item {
+    @include layout-block-item;
+  }
+
+  .layout-stack {
+    @include layout-stack;
+  }
+}

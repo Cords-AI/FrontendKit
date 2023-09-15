@@ -1,0 +1,45 @@
+@mixin vars-multiplier($prefix, $base, $base-unit, $range) {
+  @for $i from 1 through $range {
+    $value: $base * $i;
+    #{$prefix}-#{$i}x: #{$value}#{$base-unit};
+  }
+}
+
+:root {
+  @include vars-multiplier(--l-sm, 4, px, 16);
+  @include vars-multiplier(--l-md, 16, px, 16);
+  @include vars-multiplier(--l-lg, 256, px, 16);
+}
+
+@mixin body {
+  --_text-body-default-font-stack-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --_text-body-font-stack-sans: var(--text-base-font-stack-sans, var(--_text-body-default-font-stack-sans));
+  --_text-body-font-family: var(--text-base-font-family, var(--_text-base-font-stack-sans));
+  --_text-body-font-size: var(--text-base-font-size, 16px);
+  --_text-body-font-weight: var(--text-base-font-weight, normal);
+  --_text-body-font-style: var(--text-base-font-style, normal);
+  --_text-body-font-feature-settings: var(--text-base-font-feature-settings, normal);
+  --_body-color: var(--body-color, #000);
+  --_body-background-color: var(--body-background-color, #fff);
+
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: var(--_text-body-font-feature-settings);
+  font-variant-ligatures: common-ligatures contextual;
+  font-kerning: normal;
+  font-synthesis: none;
+  font-family: var(--_text-body-font-family);
+  font-size: var(--_text-body-font-size);
+  font-weight: var(--_text-body-font-weight);
+  font-style: var(--_text-body-font-style);
+  color: var(--_body-color);
+  background-color: var(--_body-background-color);
+}
+
+@mixin implement-body {
+  body {
+    @include body;
+  }
+}

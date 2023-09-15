@@ -1,0 +1,161 @@
+@function pow($expression, $exponent) {
+  $value: "1";
+  @if $exponent > 0 {
+    @for $i from 1 through $exponent {
+      $value: "#{$value} * #{$expression}";
+    }
+  }
+  @return $value;
+}
+
+@function text-scale($pow, $var: "--text-base-font-size") {
+  $s: "";
+  $op: "*";
+  @if $pow < 0 {
+    $op: "/";
+    $pow: $pow * -1;
+  }
+  @for $i from 0 to $pow {
+    $s: $s + " #{$op} var(--text-base-typographic-scale)";
+  }
+  $result: calc(var(#{$var})#{$s});
+  @return $result;
+}
+
+@mixin text-vars {
+  // Base
+  //--text-base-font-stack-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --text-base-font-stack-sans: 'Gilroy Mentor', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --text-base-font-family: var(--text-base-font-stack-sans);
+  --text-base-font-size: 16;
+  --text-base-font-weight: 400;
+  --text-base-font-style: normal;
+  --text-base-line-height: normal;
+  --text-base-letter-spacing-limit: -0.035;
+  --text-base-letter-spacing-font-size-limit: 50;
+  --text-base-letter-spacing-font-size-cross-axis: 12;
+  --text-base-typographic-scale: calc(4/3);
+  --text-base-font-feature-settings: normal;
+
+  // Sizes
+  --text-size-h1: #{text-scale(4)};
+  --text-size-h2: #{text-scale(3)};
+  --text-size-h3: #{text-scale(2)};
+  --text-size-h4: #{text-scale(1)};
+  --text-size-h5: #{text-scale(0)};
+  --text-size-h6: #{text-scale(-1)};
+  --text-size-p:  #{text-scale(0)};
+
+  // Weights
+  --text-weight-thin:       100;
+  --text-weight-extralight: 200;
+  --text-weight-light:      300;
+  --text-weight-regular:    400;
+  --text-weight-medium:     500;
+  --text-weight-semibold:   580;
+  --text-weight-bold:       660;
+  --text-weight-extrabold:  780;
+  --text-weight-black:      900;
+
+  // Line heights
+  --text-line-height-1: 0.9;
+  --text-line-height-2: 1;
+  --text-line-height-3: 1.1;
+  --text-line-height-4: 1.2;
+  --text-line-height-5: 1.35;
+  --text-line-height-6: 1.5;
+
+  // Aliases
+  --text-size-display:  var(--text-size-h1);
+  --text-size-title:    var(--text-size-h2);
+  --text-size-subtitle: var(--text-size-h3);
+  --text-size-body:     var(--text-size-p);
+  --text-size-caption:  var(--text-size-h6);
+
+  --text-weight-title: var(--text-weight-semibold);
+  --text-weight-body: var(--text-weight-regular);
+}
+
+@mixin text-letter-spacing {
+  // View graph online at:
+  // https://www.desmos.com/calculator/y1rxhpp11j
+  $degree: 4;
+  --_l: var(--l, var(--text-base-letter-spacing-limit)); // max letter-spacing
+  --_m: var(--m, var(--text-base-letter-spacing-font-size-limit)); // font size at which max letter-spacing is reached
+  --_c: var(--c, var(--text-base-letter-spacing-font-size-cross-axis)); // cross-axis point: at this font size the letter-spacing is zero
+  --_n: calc(-1 * var(--_l) / (#{pow("(var(--_c) - var(--_m))", $degree)}));
+  --_f: clamp(0, var(--_font-size), var(--_m));
+  --_computed-letter-spacing: calc(var(--_n) * #{pow("(var(--_f) - var(--_m))", $degree)} + var(--_l));
+}
+
+@mixin text-metrics {
+  --_font-family: var(--font-family, var(--text-base-font-family));
+  --_font-size: var(--font-size, var(--text-base-font-size));
+  --_font-weight: var(--font-weight, var(--text-base-font-weight));
+  --_font-style: var(--font-style, var(--text-base-font-style));
+  --_line-height: var(--line-height, var(--text-base-line-height));
+  --_letter-spacing: var(--letter-spacing, calc(var(--_computed-letter-spacing) * 1em));
+  @include text-letter-spacing;
+  font-family: var(--_font-family);
+  font-size: calc(var(--_font-size) * 1px);
+  font-weight: var(--_font-weight);
+  font-style: var(--_font-style);
+  line-height: var(--_line-height);
+  letter-spacing: var(--_letter-spacing);
+}
+
+@mixin implement-text {
+  :root {
+    @include text-vars;
+  }
+  h1, h2, h3, h4, h5, h6, p, ol, ul {
+    @include text-metrics;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    --font-weight: var(--text-weight-title);
+    --line-height: var(--text-line-height-3);
+  }
+  p, ol, ul {
+    --font-weight: var(--text-weight-body);
+    --line-height: var(--text-line-height-5);
+  }
+  h1 {
+    --font-size: var(--text-size-h1);
+  }
+  h2 {
+    --font-size: var(--text-size-h2);
+  }
+  h3 {
+    --font-size: var(--text-size-h3);
+  }
+  h4 {
+    --font-size: var(--text-size-h4);
+  }
+  h5 {
+    --font-size: var(--text-size-h5);
+  }
+  h6 {
+    --font-size: var(--text-size-h6);
+  }
+  p, ol, ul {
+    --font-size: var(--text-size-p);
+  }
+  ol, ul {
+    --_gap: var(--gap, 1em);
+    --_list-padding: var(--list-padding, 1em);
+    display: flex;
+    flex-direction: column;
+    padding-left: var(--_list-padding);
+    list-style: var(--_list-style);
+    > * + * {
+      --_item-gap: var(--item-gap, var(--_gap));
+      margin-top: var(--_item-gap);
+    }
+  }
+  ol {
+    --_list-style: var(--list-style, decimal);
+  }
+  ul {
+    --_list-style: var(--list-style, disc);
+  }
+}

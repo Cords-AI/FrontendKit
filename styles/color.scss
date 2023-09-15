@@ -1,0 +1,48 @@
+@mixin core-color {
+  --body-color: var(--color-black);
+  --body-background-color: var(--elevation-0);
+
+  //--body-color: #f5f5f5;
+  //--body-background-color: #111;
+
+  --primary-color: var(--color-blue-a400);
+  --primary-focus-color: var(--color-blue-a700);
+  --secondary-color: var(--color-blue-grey);
+  --secondary-focus-color: var(--color-blue-grey-700);
+  --positive-color: var(--color-teal);
+  --positive-focus-color: var(--color-teal-700);
+  --warning-color: var(--color-amber-600);
+  --warning-focus-color: var(--color-amber-700);
+  --negative-color: var(--color-red);
+  --negative-focus-color: var(--color-red-700);
+}
+
+@mixin quasar-color {
+  [data-css-scope=quasar] {
+    --q-primary: var(--primary-color);
+    --q-primary-focus: var(--primary-focus-color);
+    --q-secondary: var(--secondary-color);
+    --q-secondary-focus: var(--secondary-focus-color);
+    --q-positive: var(--positive-color);
+    --q-positive-focus: var(--positive-focus-color);
+    --q-warning: var(--warning-color);
+    --q-warning-focus: var(--warning-focus-color);
+    --q-negative: var(--negative-color);
+    --q-negative-focus: var(--negative-focus-color);
+  }
+}
+
+@mixin elevation-color {
+  --elevation-0: var(--color-white);
+  --elevation-1: var(--color-blue-grey-50);
+  --elevation-2: var(--color-blue-grey-100);
+  --elevation-3: var(--color-blue-grey-200);
+}
+
+@mixin implement-color {
+  @include quasar-color;
+  :root {
+    @include core-color;
+    @include elevation-color;
+  }
+}
