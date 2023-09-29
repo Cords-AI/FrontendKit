@@ -108,7 +108,7 @@
   :root {
     @include text-vars;
   }
-  h1, h2, h3, h4, h5, h6, p, ol, ul {
+  h1, h2, h3, h4, h5, h6, p, ol, ul, .text-metrics {
     @include text-metrics;
   }
   h1, h2, h3, h4, h5, h6 {

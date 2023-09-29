@@ -5,8 +5,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
-
 const qRef = ref();
 defineExpose({
   qRef,
@@ -60,8 +58,4 @@ const fill = props.fill ? 1 : 0;
 
 const vfValue = `"FILL" ${fill}, "wght" ${weight}, "GRAD" ${grade}, "opsz" ${opsz}`;
 const vfDeclaration = `font-variation-settings: ${vfValue}`;
-
-
-
-
 </script>

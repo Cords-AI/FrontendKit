@@ -1,20 +1,35 @@
 <template>
-  <q-btn color="primary" no-caps unelevated ref="qRef">
-    <slot></slot>
-    <slot name="loading"></slot>
-  </q-btn>
+  <KitQWrapper :q-component="QBtn"
+               :q-methods="methods"
+               ref="qComponent"
+               color="primary" no-caps unelevated
+               v-bind="$attrs"
+  >
+    <template v-slot:default>
+      <slot></slot>
+    </template>
+    <template v-slot:loading>
+      <slot name="loading"></slot>
+    </template>
+  </KitQWrapper>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
-const qRef = ref();
-defineExpose({
-  qRef,
+<script setup lang="ts">
+import QBtn from '~/lib/quasar/ui/src/components/btn/QBtn';
+
+defineOptions({
+  inheritAttrs: false
 })
+
+const methods = [
+  'click',
+];
+const qComponent = ref();
 </script>
 
 <style lang="scss" scoped>
-::v-deep(.q-btn) {
+[data-q-component="QBtn"],
+::v-deep([data-q-component="QBtn"]) {
   font-weight: 600;
   &.bg-primary,
   &.text-primary {
