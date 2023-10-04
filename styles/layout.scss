@@ -47,7 +47,45 @@
   }
 }
 
+@mixin layout-sizing {
+  --layout-base-full-width: calc(100vw - 2 * var(--viewport-padding-inline));
+  --layout-base-large-width: 1320px;
+  --layout-base-medium-width: 800px;
+  --layout-base-small-width: 400px;
+
+  --layout-full-max-width: var(--layout-base-full-width);
+  --layout-large-max-width: var(--layout-base-large-width);
+  --layout-medium-max-width: var(--layout-base-medium-width);
+  --layout-small-max-width: var(--layout-base-small-width);
+
+  --layout-full-padding: max(calc((100vw - var(--layout-full-max-width)) / 2), var(--viewport-padding-inline));
+  --layout-full-left-edge: var(--layout-full-padding);
+  --layout-full-width: calc(100vw - 2 * var(--layout-full-left-edge));
+  --layout-full-right-edge: calc(var(--layout-full-left-edge) + var(--layout-full-width));
+
+  --layout-large-padding: max(calc((100vw - var(--layout-large-max-width)) / 2), var(--viewport-padding-inline));
+  --layout-large-left-edge: var(--layout-large-padding);
+  --layout-large-width: calc(100vw - 2 * var(--layout-large-left-edge));
+  --layout-large-right-edge: calc(var(--layout-large-left-edge) + var(--layout-large-width));
+
+  --layout-medium-padding: max(calc((100vw - var(--layout-medium-max-width)) / 2), var(--viewport-padding-inline));
+  --layout-medium-left-edge: var(--layout-medium-padding);
+  --layout-medium-width: calc(100vw - 2 * var(--layout-medium-left-edge));
+  --layout-medium-right-edge: calc(var(--layout-medium-left-edge) + var(--layout-medium-width));
+
+  --layout-small-padding: max(calc((100vw - var(--layout-small-max-width)) / 2), var(--viewport-padding-inline));
+  --layout-small-left-edge: var(--layout-small-padding);
+  --layout-small-width: calc(100vw - 2 * var(--layout-small-left-edge));
+  --layout-small-right-edge: calc(var(--layout-small-left-edge) + var(--layout-small-width));
+
+  --layout-column-unit-float: #{(1/12)};
+  --layout-column-unit-percent: calc(var(--layout-column-unit-float) * 100%);
+}
+
 @mixin implement-layout {
+  :root {
+    @include layout-sizing;
+  }
   .layout {
     @include layout;
   }

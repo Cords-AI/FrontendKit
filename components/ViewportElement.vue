@@ -19,6 +19,12 @@ interface Props {
   easing?: number,
   cssVars?: boolean,
   viewportClasses?: boolean,
+  clampElMin?: number,
+  clampElMax?: number,
+  clampTopMin?: number,
+  clampTopMax?: number,
+  clampBottomMin?: number,
+  clampBottomMax?: number,
 }
 const props = withDefaults(defineProps<Props>(), {
   elIn: 'b',
@@ -30,6 +36,12 @@ const props = withDefaults(defineProps<Props>(), {
   easing: 240,
   cssVars: true,
   viewportClasses: true,
+  clampElMin: 0,
+  clampElMax: 1,
+  clampTopMin: 0,
+  clampTopMax: 1,
+  clampBottomMin: 0,
+  clampBottomMax: 1,
 })
 
 const el = ref<HTMLElement>() as Ref<HTMLElement>;
@@ -46,10 +58,14 @@ const stopEnterViewportWatcher = watchImmediate(inViewport, (value) => {
   }
 });
 
+const clamp = (input: number, min: number, max: number): number => {
+  return Math.min(Math.max(input, min), max);
+}
+
 let ts = performance.now();
-const currentElProgress = ref<number>(0);
-const currentTopProgress = ref<number>(0);
-const currentBottomProgress = ref<number>(0);
+const currentElProgress = ref<number>(clamp(0, props.clampElMin, props.clampElMax));
+const currentTopProgress = ref<number>(clamp(0, props.clampTopMin, props.clampTopMax));
+const currentBottomProgress = ref<number>(clamp(0, props.clampBottomMin, props.clampBottomMax));
 
 const elIn = computed(() => parseExpression(props.elIn));
 const elOut = computed(() => parseExpression(props.elOut));
@@ -60,7 +76,7 @@ const elRange = computed((): { min: number, max: number } => {
   };
 })
 const elProgress = computed(() => {
-  return getPercentInRange(top.value, elRange.value.min, elRange.value.max);
+  return clamp(getPercentInRange(top.value, elRange.value.min, elRange.value.max), props.clampElMin, props.clampElMax);
 })
 
 const topIn = computed(() => parseExpression(props.topIn));
@@ -72,7 +88,7 @@ const topRange = computed((): { min: number, max: number } => {
   }
 })
 const topProgress = computed(() => {
-  return getPercentInRange(top.value, topRange.value.min, topRange.value.max);
+  return clamp(getPercentInRange(top.value, topRange.value.min, topRange.value.max), props.clampTopMin, props.clampTopMax);
 })
 
 const bottomIn = computed(() => parseExpression(props.bottomIn));
@@ -84,7 +100,7 @@ const bottomRange = computed((): { min: number, max: number } => {
   }
 })
 const bottomProgress = computed(() => {
-  return getPercentInRange(top.value, bottomRange.value.min, bottomRange.value.max);
+  return clamp(getPercentInRange(top.value, bottomRange.value.min, bottomRange.value.max), props.clampBottomMin, props.clampBottomMax);
 })
 
 const easing = computed(() => 1 / Math.max(props.easing, 0.0001));

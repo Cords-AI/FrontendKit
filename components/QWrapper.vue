@@ -22,10 +22,12 @@ interface Props {
   qComponent: Object,
   qMethods?: String[],
   qScope?: boolean,
+  inheritAttrs?: boolean,
 }
 const props = withDefaults(defineProps<Props>(), {
   qMethods: [],
   qScope: true,
+  inheritAttrs: false,
 })
 
 const qComponent = ref();
@@ -38,6 +40,7 @@ const camelize = (str) => {
 }
 
 const propsToPass = computed(() => {
+  if (props.inheritAttrs) return attrs;
   const filteredProps = {};
   const qPropKeys = Object.keys(qProps);
   for (const prop in attrs) {

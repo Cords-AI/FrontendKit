@@ -1,4 +1,4 @@
-@function pow($expression, $exponent) {
+@function pow-n($expression, $exponent) {
   $value: "1";
   @if $exponent > 0 {
     @for $i from 1 through $exponent {
@@ -24,8 +24,7 @@
 
 @mixin text-vars {
   // Base
-  //--text-base-font-stack-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-  --text-base-font-stack-sans: 'Gilroy Mentor', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --text-base-font-stack-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
   --text-base-font-family: var(--text-base-font-stack-sans);
   --text-base-font-size: 16;
   --text-base-font-weight: 400;
@@ -36,6 +35,7 @@
   --text-base-letter-spacing-font-size-cross-axis: 12;
   --text-base-typographic-scale: calc(4/3);
   --text-base-font-feature-settings: normal;
+  --text-base-font-color: currentcolor;
 
   // Sizes
   --text-size-h1: #{text-scale(4)};
@@ -83,9 +83,11 @@
   --_l: var(--l, var(--text-base-letter-spacing-limit)); // max letter-spacing
   --_m: var(--m, var(--text-base-letter-spacing-font-size-limit)); // font size at which max letter-spacing is reached
   --_c: var(--c, var(--text-base-letter-spacing-font-size-cross-axis)); // cross-axis point: at this font size the letter-spacing is zero
-  --_n: calc(-1 * var(--_l) / (#{pow("(var(--_c) - var(--_m))", $degree)}));
+  --_nPow: #{pow-n("(var(--_c) - var(--_m))", $degree)};
+  --_n: calc(-1 * var(--_l) / (var(--_nPow)));
   --_f: clamp(0, var(--_font-size), var(--_m));
-  --_computed-letter-spacing: calc(var(--_n) * #{pow("(var(--_f) - var(--_m))", $degree)} + var(--_l));
+  --_lPow: #{pow-n("(var(--_f) - var(--_m))", $degree)};
+  --_computed-letter-spacing: calc(var(--_n) * var(--_lPow) + var(--_l));
 }
 
 @mixin text-metrics {
@@ -93,6 +95,7 @@
   --_font-size: var(--font-size, var(--text-base-font-size));
   --_font-weight: var(--font-weight, var(--text-base-font-weight));
   --_font-style: var(--font-style, var(--text-base-font-style));
+  --_font-color: var(--font-color, var(--text-base-font-color));
   --_line-height: var(--line-height, var(--text-base-line-height));
   --_letter-spacing: var(--letter-spacing, calc(var(--_computed-letter-spacing) * 1em));
   @include text-letter-spacing;
@@ -100,6 +103,7 @@
   font-size: calc(var(--_font-size) * 1px);
   font-weight: var(--_font-weight);
   font-style: var(--_font-style);
+  color: var(--_font-color);
   line-height: var(--_line-height);
   letter-spacing: var(--_letter-spacing);
 }
