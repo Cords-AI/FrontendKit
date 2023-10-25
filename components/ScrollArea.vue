@@ -1,20 +1,15 @@
 <template>
-  <KitQWrapper :q-component="QScrollArea"
-               :q-methods="methods"
-               ref="qComponent"
-               :vertical-thumb-style="thumbVerticalStyle"
-               :horizontal-thumb-style="thumbHorizontalStyle"
-               v-bind="$attrs"
-  >
-    <template v-slot:default>
+  <div class="scroll-area-wrapper">
+    <q-scroll-area :vertical-thumb-style="thumbVerticalStyle"
+                   :horizontal-thumb-style="thumbHorizontalStyle"
+                   ref="scrollAreaRef"
+    >
       <slot></slot>
-    </template>
-  </KitQWrapper>
+    </q-scroll-area>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import QScrollArea from '~/lib/quasar/ui/src/components/scroll-area/QScrollArea';
-
 defineOptions({
   inheritAttrs: false
 })
@@ -37,10 +32,10 @@ const methods = [
   'setScrollPosition',
   'setScrollPercentage',
 ];
-const qComponent = ref();
+const scrollAreaRef = ref();
 
 const scrollMetrics = computed(() => {
-  return qComponent.value?.getScroll();
+  return scrollAreaRef.value?.getScroll();
 })
 
 const verticalPosition = computed(() => {
@@ -99,13 +94,14 @@ const thumbHorizontalStyle = {
 </script>
 
 <style lang="scss" scoped>
-[data-q-component-wrapper="QScrollArea"] {
+.scroll-area-wrapper {
   --_scroll-area-width: var(--scroll-area-width, v-bind(autoWidth));
   --_scroll-area-height: var(--scroll-area-height, v-bind(autoHeight));
   --_scroll-area-max-width: var(--scroll-area-max-width, 100%);
   --_scroll-area-max-height: var(--scroll-area-max-height, 100%);
   --_scroll-indicator-color: var(--scroll-indicator-color, #000);
   --_scroll-indicator-opacity: var(--scroll-indicator-opacity, 0.1);
+  --_scroll-indicator-size: var(--scroll-indicator-size, 6px);
   --_scroll-thumb-color: var(--scroll-thumb-color, #000);
   --_scroll-thumb-opacity: var(--scroll-thumb-opacity, 0.25);
   --_scroll-thumb-border-radius: var(--scroll-thumb-border-radius, 3px);
@@ -121,7 +117,7 @@ const thumbHorizontalStyle = {
     content: "";
     position: absolute;
     width: 100%;
-    height: 6px;
+    height: var(--_scroll-indicator-size);
     background-color: var(--_scroll-indicator-color);
     -webkit-mask-image: linear-gradient(to var(--direction), rgb(0 0 0 / var(--_scroll-indicator-opacity)), rgb(0 0 0 / 0));
     mask-image: linear-gradient(to var(--direction), rgb(0 0 0 / var(--_scroll-indicator-opacity)), rgb(0 0 0 / 0));
@@ -139,8 +135,7 @@ const thumbHorizontalStyle = {
     opacity: v-bind(scrollIndicatorBottomOpacity);
   }
 }
-[data-q-component="QScrollArea"],
-::v-deep([data-q-component="QScrollArea"]) {
+.q-scrollarea {
   width: 100%;
   height: 100%;
 }

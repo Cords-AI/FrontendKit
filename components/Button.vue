@@ -1,72 +1,75 @@
 <template>
-  <KitQWrapper :q-component="QBtn"
-               :q-methods="methods"
-               ref="qComponent"
-               color="primary" no-caps unelevated
-               v-bind="$attrs"
-               inherit-attrs
-               :data-btn-size="props.size"
-               class="text-metrics"
+  <q-btn color="primary"
+         no-caps
+         unelevated
+         class="text-metrics"
+         :data-btn-size="props.size"
   >
-    <template v-slot:default>
-      <slot></slot>
-    </template>
-    <template v-slot:loading>
-      <slot name="loading"></slot>
-    </template>
-  </KitQWrapper>
+    <slot></slot>
+    <slot name="loading"></slot>
+  </q-btn>
 </template>
 
 <script setup lang="ts">
-import QBtn from '~/lib/quasar/ui/src/components/btn/QBtn';
-
-defineOptions({
-  inheritAttrs: false
-})
-
 interface Props {
   size?: string,
 }
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
 })
-
-const methods = [
-  'click',
-];
-const qComponent = ref();
 </script>
 
 <style lang="scss" scoped>
-[data-q-component="QBtn"],
-::v-deep([data-q-component="QBtn"]) {
+.q-btn {
   --_xs-button-font-size: var(--xs-button-font-size, 8);
   --_sm-button-font-size: var(--sm-button-font-size, 10);
   --_md-button-font-size: var(--md-button-font-size, 14);
-  --_lg-button-font-size: var(--lg-button-font-size, 14);
-  --_xl-button-font-size: var(--xl-button-font-size, 14);
-  --_xs-button-size: var(--xs-button-size, 20px);
-  --_sm-button-size: var(--sm-button-size, 28px);
-  --_md-button-size: var(--md-button-size, 36px);
-  --_lg-button-size: var(--lg-button-size, 44px);
-  --_xl-button-size: var(--xl-button-size, 52px);
-  --_xs-button-padding: var(--xs-button-padding, 10px);
-  --_sm-button-padding: var(--sm-button-padding, 14px);
-  --_md-button-padding: var(--md-button-padding, 18px);
-  --_lg-button-padding: var(--lg-button-padding, 22px);
-  --_xl-button-padding: var(--xl-button-padding, 26px);
+  --_lg-button-font-size: var(--lg-button-font-size, 15);
+  --_xl-button-font-size: var(--xl-button-font-size, 16);
+  --_xs-button-size: calc(var(--xs-button-size, 20px) * var(--_dense-factor));
+  --_sm-button-size: calc(var(--sm-button-size, 28px) * var(--_dense-factor));
+  --_md-button-size: calc(var(--md-button-size, 36px) * var(--_dense-factor));
+  --_lg-button-size: calc(var(--lg-button-size, 44px) * var(--_dense-factor));
+  --_xl-button-size: calc(var(--xl-button-size, 52px) * var(--_dense-factor));
+  --_xs-button-padding: calc(var(--xs-button-padding, 10px) * var(--_dense-factor));
+  --_sm-button-padding: calc(var(--sm-button-padding, 14px) * var(--_dense-factor));
+  --_md-button-padding: calc(var(--md-button-padding, 18px) * var(--_dense-factor));
+  --_lg-button-padding: calc(var(--lg-button-padding, 22px) * var(--_dense-factor));
+  --_xl-button-padding: calc(var(--xl-button-padding, 26px) * var(--_dense-factor));
   --_button-font-weight: var(--button-font-weight, 600);
   --_button-border-radius: var(--button-border-radius, 4px);
+  --_button-border-width: var(--button-border-width, 1px);
+  --_button-dense-factor: var(--button-dense-factor, calc(3/4));
 
+  --_focus-helper-opacity: 1;
+  --_dense-factor: 1;
   --font-weight: var(--_button-font-weight);
   --font-size: var(--_button-font-size);
-  font-weight: var(--_font-weight);
-  font-size: calc(var(--_font-size) * 1px);
+  --line-height: normal;
   height: var(--_button-size);
-  padding: 0 var(--_button-padding);
-  line-height: normal;
   min-height: auto;
   min-width: auto;
+  padding: 0 var(--_button-padding);
+  &.q-btn--rectangle {
+    border-radius: var(--_button-border-radius);
+  }
+  &.q-btn--rounded {
+    border-radius: calc(var(--_button-size) / 2);
+  }
+  &.q-btn--round {
+    padding: 0;
+    width: var(--_button-size);
+  }
+  &.q-btn--outline,
+  &.q-btn--flat {
+    --_focus-helper-opacity: 0.075;
+  }
+  &.q-btn--outline:before {
+    border-width: var(--_button-border-width);
+  }
+  &.q-btn--dense {
+    --_dense-factor: var(--_button-dense-factor);
+  }
   &[data-btn-size='xs'] {
     --_button-font-size: var(--_xs-button-font-size);
     --_button-size: var(--_xs-button-size);
@@ -92,10 +95,6 @@ const qComponent = ref();
     --_button-size: var(--_xl-button-size);
     --_button-padding: var(--_xl-button-padding);
   }
-  &.q-btn--round {
-    padding: 0;
-    width: var(--_button-size);
-  }
   &.bg-primary,
   &.text-primary {
     --focus-helper-background: var(--primary-focus-color);
@@ -116,31 +115,17 @@ const qComponent = ref();
   &.text-negative {
     --focus-helper-background: var(--negative-focus-color);
   }
-  &.q-focusable:focus > .q-focus-helper,
-  &.q-manual-focusable--focused > .q-focus-helper,
-  &.q-hoverable:hover > .q-focus-helper {
+  &.q-focusable:focus ::v-deep(> .q-focus-helpe),
+  &.q-manual-focusable--focused ::v-deep(> .q-focus-helper),
+  &.q-hoverable:hover ::v-deep(> .q-focus-helper) {
     background: var(--focus-helper-background);
-    opacity: var(--focus-helper-opacity);
+    opacity: var(--_focus-helper-opacity);
   }
-  .q-focus-helper {
+  ::v-deep(.q-focus-helper) {
     &:before,
     &:after {
       display: none;
     }
-  }
-  &.q-btn--rectangle {
-    --focus-helper-opacity: 1;
-    border-radius: var(--_button-border-radius);
-    &.q-btn--rounded {
-      
-    }
-    //&:not(.q-btn--rounded) {
-    //
-    //}
-  }
-  &.q-btn--outline,
-  &.q-btn--flat {
-    --focus-helper-opacity: 0.075;
   }
 }
 </style>

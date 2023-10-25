@@ -1,23 +1,18 @@
 <template>
-  <q-icon ref="qRef" :name="name" :size="sizePx" :style="vfDeclaration">
+  <q-icon :name="name" :size="sizePx" :style="vfDeclaration">
     <slot></slot>
   </q-icon>
 </template>
 
 <script lang="ts" setup>
-const qRef = ref();
-defineExpose({
-  qRef,
-})
-
 interface Props {
   name: string,
-  size?: number|string,
+  size?: number | string,
   outlined?: boolean,
   rounded?: boolean,
   sharp?: boolean,
-  weight?: number|string,
-  grade?: number|string,
+  weight?: number | string,
+  grade?: number | string,
   fill?: boolean,
 }
 
@@ -44,7 +39,7 @@ else if (props.sharp) {
 if (!namePrefix) namePrefix = 'sym_o_';
 const name = `${namePrefix}${props.name}`;
 
-let size = props.size;
+let size = props.size as number | string;
 if (typeof size === 'string') {
   size = size.replace('px', '');
   size = Number(size);

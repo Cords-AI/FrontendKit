@@ -112,39 +112,51 @@
   :root {
     @include text-vars;
   }
-  h1, h2, h3, h4, h5, h6, p, ol, ul, .text-metrics {
+  .text-metrics-deep {
+    @include text-metrics;
+    * {
+      @include text-metrics;
+    }
+  }
+  h1, h2, h3, h4, h5, h6, p, ol, ul, .text-metrics,
+  .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6,
+  .text-p, .text-ol, .text-ul {
     @include text-metrics;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4, h5, h6,
+  .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6 {
     --font-weight: var(--text-weight-title);
     --line-height: var(--text-line-height-3);
   }
-  p, ol, ul {
+  p, ol, ul,
+  .text-p, .text-ol, .text-ul {
     --font-weight: var(--text-weight-body);
     --line-height: var(--text-line-height-5);
   }
-  h1 {
+  h1, .text-h1 {
     --font-size: var(--text-size-h1);
   }
-  h2 {
+  h2, .text-h2 {
     --font-size: var(--text-size-h2);
   }
-  h3 {
+  h3, .text-h3 {
     --font-size: var(--text-size-h3);
   }
-  h4 {
+  h4, .text-h4 {
     --font-size: var(--text-size-h4);
   }
-  h5 {
+  h5, .text-h5 {
     --font-size: var(--text-size-h5);
   }
-  h6 {
+  h6, .text-h6 {
     --font-size: var(--text-size-h6);
   }
-  p, ol, ul {
+  p, ol, ul,
+  .text-p, .text-ol, .text-ul {
     --font-size: var(--text-size-p);
   }
-  ol, ul {
+  ol, ul,
+  .text-ol, .text-ul {
     --_gap: var(--gap, 1em);
     --_list-padding: var(--list-padding, 1em);
     display: flex;
@@ -152,14 +164,14 @@
     padding-left: var(--_list-padding);
     list-style: var(--_list-style);
     > * + * {
-      --_item-gap: var(--item-gap, var(--_gap));
+      --_item-gap: var(--gap, var(--_gap));
       margin-top: var(--_item-gap);
     }
   }
-  ol {
+  ol, .text-ol {
     --_list-style: var(--list-style, decimal);
   }
-  ul {
+  ul, .text-ul {
     --_list-style: var(--list-style, disc);
   }
 }

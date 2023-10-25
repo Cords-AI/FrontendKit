@@ -14,21 +14,6 @@
   --negative-focus-color: var(--color-red-700);
 }
 
-@mixin quasar-color {
-  [data-css-scope=quasar] {
-    --q-primary: var(--primary-color);
-    --q-primary-focus: var(--primary-focus-color);
-    --q-secondary: var(--secondary-color);
-    --q-secondary-focus: var(--secondary-focus-color);
-    --q-positive: var(--positive-color);
-    --q-positive-focus: var(--positive-focus-color);
-    --q-warning: var(--warning-color);
-    --q-warning-focus: var(--warning-focus-color);
-    --q-negative: var(--negative-color);
-    --q-negative-focus: var(--negative-focus-color);
-  }
-}
-
 @mixin elevation-color {
   --elevation-0: var(--color-white);
   --elevation-1: var(--color-blue-grey-50);
@@ -37,7 +22,6 @@
 }
 
 @mixin implement-color {
-  @include quasar-color;
   :root {
     @include core-color;
     @include elevation-color;

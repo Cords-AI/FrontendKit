@@ -51,15 +51,37 @@ const windowHeight = computed((): number => windowSize.height.value);
 const { top, height } = useElementBounding(el);
 const inViewport = useElementVisibility(el);
 const enteredViewport = ref(false);
-const stopEnterViewportWatcher = watchImmediate(inViewport, (value) => {
+const stopEnteredViewportWatcher = watchImmediate(inViewport, (value) => {
   if (value) {
     enteredViewport.value = true;
-    stopEnterViewportWatcher();
+    stopEnteredViewportWatcher();
   }
 });
 
 const clamp = (input: number, min: number, max: number): number => {
   return Math.min(Math.max(input, min), max);
+}
+
+const getPercentInRange = (input: number, min: number, max: number): number => {
+  return (input - min) / (max - min);
+}
+
+const parseExpression = (expression: string): number => {
+  const regex = /([tb])([+-]?)(\d+)?(vh|px)?/g;
+  const parts = regex.exec(expression);
+  if (!parts) {
+    console.error(`Unable to parse ViewportElement expression: ${expression}`);
+    return 0;
+  }
+  const origin = parts[1] === 't' ? 0 : windowHeight.value;
+  if (expression.length === 1) return origin;
+  const sign = parts[2] === '+' ? 1 : -1;
+  const unit = parts[4];
+  let value = parseFloat(parts[3]);
+  if (unit === 'vh') {
+    value = value * windowHeight.value / 100;
+  }
+  return origin + (value * sign);
 }
 
 let ts = performance.now();
@@ -78,6 +100,14 @@ const elRange = computed((): { min: number, max: number } => {
 const elProgress = computed(() => {
   return clamp(getPercentInRange(top.value, elRange.value.min, elRange.value.max), props.clampElMin, props.clampElMax);
 })
+const elInRange = computed(() => elProgress.value > props.clampElMin && elProgress.value < props.clampElMax);
+const elEnteredRange = ref(false);
+const stopElEnteredRangeWatcher = watchImmediate(elInRange, (value) => {
+  if (value) {
+    elEnteredRange.value = true;
+    stopElEnteredRangeWatcher();
+  }
+});
 
 const topIn = computed(() => parseExpression(props.topIn));
 const topOut = computed(() => parseExpression(props.topOut));
@@ -90,6 +120,14 @@ const topRange = computed((): { min: number, max: number } => {
 const topProgress = computed(() => {
   return clamp(getPercentInRange(top.value, topRange.value.min, topRange.value.max), props.clampTopMin, props.clampTopMax);
 })
+const topInRange = computed(() => topProgress.value > props.clampTopMin && topProgress.value < props.clampTopMax);
+const topEnteredRange = ref(false);
+const stopTopEnteredRangeWatcher = watchImmediate(topInRange, (value) => {
+  if (value) {
+    topEnteredRange.value = true;
+    stopTopEnteredRangeWatcher();
+  }
+});
 
 const bottomIn = computed(() => parseExpression(props.bottomIn));
 const bottomOut = computed(() => parseExpression(props.bottomOut));
@@ -102,6 +140,14 @@ const bottomRange = computed((): { min: number, max: number } => {
 const bottomProgress = computed(() => {
   return clamp(getPercentInRange(top.value, bottomRange.value.min, bottomRange.value.max), props.clampBottomMin, props.clampBottomMax);
 })
+const bottomInRange = computed(() => bottomProgress.value > props.clampBottomMin && bottomProgress.value < props.clampBottomMax);
+const bottomEnteredRange = ref(false);
+const stopBottomEnteredRangeWatcher = watchImmediate(bottomInRange, (value) => {
+  if (value) {
+    bottomEnteredRange.value = true;
+    stopBottomEnteredRangeWatcher();
+  }
+});
 
 const easing = computed(() => 1 / Math.max(props.easing, 0.0001));
 
@@ -137,30 +183,26 @@ useRafFn(() => {
       el.value.classList.remove('ve-in-viewport');
     }
     if (enteredViewport.value) el.value.classList.add('ve-entered-viewport');
+    if (elInRange.value) {
+      el.value.classList.add('ve-el-in-range');
+    } else {
+      el.value.classList.remove('ve-el-in-range');
+    }
+    if (elEnteredRange.value) el.value.classList.add('ve-el-entered-range');
+    if (topInRange.value) {
+      el.value.classList.add('ve-top-in-range');
+    } else {
+      el.value.classList.remove('ve-top-in-range');
+    }
+    if (topEnteredRange.value) el.value.classList.add('ve-top-entered-range');
+    if (bottomInRange.value) {
+      el.value.classList.add('ve-bottom-in-range');
+    } else {
+      el.value.classList.remove('ve-bottom-in-range');
+    }
+    if (bottomEnteredRange.value) el.value.classList.add('ve-bottom-entered-range');
   }
 })
-
-const parseExpression = (expression: string): number => {
-  const regex = /([tb])([+-]?)(\d+)?(vh|px)?/g;
-  const parts = regex.exec(expression);
-  if (!parts) {
-    console.error(`Unable to parse ViewportElement expression: ${expression}`);
-    return 0;
-  }
-  const origin = parts[1] === 't' ? 0 : windowHeight.value;
-  if (expression.length === 1) return origin;
-  const sign = parts[2] === '+' ? 1 : -1;
-  const unit = parts[4];
-  let value = parseFloat(parts[3]);
-  if (unit === 'vh') {
-    value = value * windowHeight.value / 100;
-  }
-  return origin + (value * sign);
-}
-
-const getPercentInRange = (input: number, min: number, max: number): number => {
-  return (input - min) / (max - min);
-}
 
 onMounted(() => {
   el.value = elHook.value.nextElementSibling;
@@ -173,5 +215,11 @@ defineExpose({
   bottomProgress,
   inViewport,
   enteredViewport,
+  elInRange,
+  elEnteredRange,
+  topInRange,
+  topEnteredRange,
+  bottomInRange,
+  bottomEnteredRange,
 })
 </script>
